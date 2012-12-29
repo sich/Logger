@@ -51,13 +51,10 @@
 		
 		public function __construct($filepath, $logLevel)
 		{
-			if ($logLevel != self::OFF)
-			{ 
-				$this->_logFile = $filepath;
-				$this->_level = $logLevel;
-				
-				$this->_CheckPermissions();
-			}
+			$this->_logFile = $filepath;
+			$this->_level = $logLevel;
+			
+			$this->_CheckPermissions();
 			return;
 		}
 		
@@ -97,7 +94,7 @@
 		
 		public function Log($line, $level)
 		{
-			if ($this->_level <= $level)
+			if ($this->_level <= $level && $level != self::OFF)
 			{
 				$this->_newLines .= $this->_GetLogLine($level, $line);
 			}
@@ -150,6 +147,8 @@
 		 */
 		public function Save()
 		{
+			if (empty($this->_newLines)) return false;
+			
 			if ($this->_OpenFile())
 			{
 			    if (fwrite($this->_fileHandle , $this->_newLines) === false)
